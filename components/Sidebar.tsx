@@ -49,7 +49,7 @@ export default function Sidebar() {
               color: active ? "#00e676" : "rgba(255,255,255,0.45)",
             }}>
               <span style={{ fontSize: 16, width: 20, textAlign: "center" }}>{item.icon}</span>
-              <span style={{ fontSize: 13, fontWeight: 500 }}>{item.label}</span>
+              <span style={{ fontSize: 13, fontWeight: 500, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{item.label}</span>
               {active && (
                 <span className="pulse-dot" style={{
                   marginLeft: "auto", width: 6, height: 6,

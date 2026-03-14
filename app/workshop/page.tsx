@@ -18,7 +18,7 @@ const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string }
 
 export default function Workshop() {
   return (
-    <div className="max-w-4xl">
+    <div style={{ width: "100%" }}>
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-white mb-1">Workshop</h1>
         <p className="text-white/40 text-sm">Everything Apollo is working on — past, present, and queued</p>
@@ -43,7 +43,7 @@ export default function Workshop() {
         {TASKS.map(task => {
           const cfg = STATUS_CONFIG[task.status];
           return (
-            <div key={task.id} className="glass p-5">
+            <div key={task.id} className="glass p-5" style={{ transition: "background 0.15s" }}>
               <div className="flex items-start justify-between gap-4">
                 <div className="flex items-start gap-4 flex-1">
                   <div className="mt-0.5 w-8 h-8 rounded-lg flex items-center justify-center text-sm flex-shrink-0"

@@ -51,7 +51,7 @@ export default function Intelligence() {
   const [query, setQuery] = useState(PRESETS[0]);
 
   return (
-    <div className="max-w-4xl">
+    <div style={{ width: "100%" }}>
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-white mb-1">Intelligence Feed</h1>
         <p className="text-white/40 text-sm">Research and insights for what we're building</p>

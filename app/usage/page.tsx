@@ -19,7 +19,7 @@ export default function Usage() {
   const cacheSavings = 0.40;
 
   return (
-    <div className="max-w-4xl">
+    <div style={{ width: "100%" }}>
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-white mb-1">API Usage</h1>
         <p className="text-white/40 text-sm">Token consumption and cost tracking</p>
@@ -51,10 +51,11 @@ export default function Usage() {
               <div
                 className="w-full rounded-t-lg transition-all"
                 style={{
-                  height: `${(d.cost / maxCost) * 80}px`,
+                  height: `${(d.cost / maxCost) * 120}px`,
                   background: d.day === "Mar 14"
                     ? "linear-gradient(to top, #00e676, #00b0ff)"
-                    : "rgba(255,255,255,0.08)"
+                    : "rgba(255,255,255,0.08)",
+                  boxShadow: d.day === "Mar 14" ? "0 0 12px rgba(0,230,118,0.3)" : undefined
                 }}
               />
               <div className="text-[10px] text-white/30">{d.day.split(" ")[1]}</div>

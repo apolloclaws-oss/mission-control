@@ -38,7 +38,7 @@ const STATUS: Record<string, { color: string; bg: string; label: string }> = {
 
 export default function Cron() {
   return (
-    <div className="max-w-4xl">
+    <div style={{ width: "100%" }}>
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-white mb-1">Cron Jobs</h1>
         <p className="text-white/40 text-sm">Scheduled tasks Apollo runs automatically</p>

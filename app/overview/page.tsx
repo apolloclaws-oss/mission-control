@@ -11,7 +11,7 @@ const G = {
   border: "rgba(255,255,255,0.09)",
   text: "rgba(255,255,255,0.9)",
   muted: "rgba(255,255,255,0.4)",
-  dim: "rgba(255,255,255,0.2)",
+  dim: "rgba(255,255,255,0.35)",
 };
 
 function Card({ children, style }: { children: React.ReactNode; style?: React.CSSProperties }) {
@@ -67,18 +67,18 @@ const PROJECTS = [
 ];
 
 const ACTIVITY = [
-  { time: "15:56", text: "Mission Control dashboard built" },
-  { time: "15:09", text: "Gemini web search configured" },
-  { time: "14:54", text: "Screen control via Peekaboo unlocked" },
-  { time: "13:55", text: "UI UX Pro Max skill loaded" },
-  { time: "13:54", text: "Claude-Mem v10.5.5 installed" },
-  { time: "13:53", text: "Superpowers v5.0.2 installed" },
   { time: "13:07", text: "Exeris website built" },
+  { time: "13:53", text: "Superpowers v5.0.2 installed" },
+  { time: "13:54", text: "Claude-Mem v10.5.5 installed" },
+  { time: "13:55", text: "UI UX Pro Max skill loaded" },
+  { time: "14:54", text: "Screen control via Peekaboo unlocked" },
+  { time: "15:09", text: "Gemini web search configured" },
+  { time: "15:56", text: "Mission Control dashboard built" },
 ];
 
 export default function Overview() {
   return (
-    <div style={{ maxWidth: 960 }}>
+    <div style={{ width: "100%" }}>
       {/* Header */}
       <div style={{ marginBottom: 32 }}>
         <h1 style={{ fontSize: 26, fontWeight: 700, color: "#fff", margin: 0, marginBottom: 6 }}>Overview</h1>
@@ -132,7 +132,7 @@ export default function Overview() {
             <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, color: G.dim, marginBottom: 6 }}>
               <span>284K used</span><span>1M limit</span>
             </div>
-            <div style={{ height: 4, background: "rgba(255,255,255,0.06)", borderRadius: 4, overflow: "hidden" }}>
+            <div style={{ height: 6, background: "rgba(255,255,255,0.06)", borderRadius: 4, overflow: "hidden" }}>
               <div style={{ width: "28%", height: "100%", background: `linear-gradient(90deg, ${G.green}, ${G.blue})`, borderRadius: 4 }} />
             </div>
           </div>
@@ -146,11 +146,11 @@ export default function Overview() {
           </div>
           <Countdown seconds={847} />
           <div style={{ color: G.dim, fontSize: 12, marginTop: 8, marginBottom: 20 }}>Every ~15 minutes</div>
-          <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: 6 }}>
+          <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: 8 }}>
             {["Search Twitter for OpenClaw tips", "Review project statuses", "Check dev servers"].map(t => (
               <div key={t} style={{
                 fontSize: 11, color: G.muted, background: "rgba(255,255,255,0.03)",
-                borderRadius: 10, padding: "8px 12px", textAlign: "left",
+                borderRadius: 10, padding: "10px 12px", textAlign: "left",
               }}>→ {t}</div>
             ))}
           </div>
@@ -173,7 +173,7 @@ export default function Overview() {
                     color: p.color, background: `${p.color}15`, border: `1px solid ${p.color}30`,
                   }}>{p.status}</span>
                 </div>
-                <p style={{ color: G.dim, fontSize: 11, lineHeight: 1.5, margin: 0 }}>{p.next}</p>
+                <p style={{ color: G.dim, fontSize: 12, lineHeight: 1.5, margin: 0, wordBreak: "break-word" }}>{p.next}</p>
               </div>
             ))}
           </div>
@@ -184,12 +184,13 @@ export default function Overview() {
       <Card>
         <Label>Day One — 2026-03-14</Label>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-          {ACTIVITY.map(a => (
+          {ACTIVITY.map((a, i) => (
             <div key={a.text} style={{
               display: "flex", alignItems: "center", gap: 12,
               padding: "10px 14px", borderRadius: 12,
               background: "rgba(255,255,255,0.03)",
               border: "1px solid rgba(255,255,255,0.05)",
+              gridColumn: i === ACTIVITY.length - 1 ? "1 / -1" : undefined,
             }}>
               <span style={{ width: 6, height: 6, borderRadius: "50%", background: G.green, flexShrink: 0 }} />
               <span style={{ color: G.muted, fontSize: 11, fontFamily: "monospace", flexShrink: 0 }}>{a.time}</span>
