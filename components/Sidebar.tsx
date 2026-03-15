@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
 
 const nav = [
   { href: "/overview", icon: "⊙", label: "Overview" },
@@ -12,6 +13,7 @@ const nav = [
 
 export default function Sidebar() {
   const path = usePathname();
+  const [hoveredHref, setHoveredHref] = useState<string | null>(null);
   return (
     <aside className="sidebar" style={{
       position: "fixed", left: 0, top: 0, height: "100%", width: "224px",
@@ -39,15 +41,27 @@ export default function Sidebar() {
       <nav style={{ flex: 1, padding: "16px 12px", display: "flex", flexDirection: "column", gap: 4 }}>
         {nav.map((item) => {
           const active = path === item.href || path.startsWith(item.href + "/");
+          const hovered = hoveredHref === item.href;
           return (
-            <Link key={item.href} href={item.href} style={{
-              display: "flex", alignItems: "center", gap: 12,
-              padding: "10px 12px", borderRadius: 12, textDecoration: "none",
-              transition: "all 0.15s",
-              background: active ? "rgba(0,230,118,0.08)" : "transparent",
-              border: active ? "1px solid rgba(0,230,118,0.2)" : "1px solid transparent",
-              color: active ? "#00e676" : "rgba(255,255,255,0.45)",
-            }}>
+            <Link
+              key={item.href}
+              href={item.href}
+              style={{
+                display: "flex", alignItems: "center", gap: 12,
+                padding: "10px 12px", borderRadius: 12, textDecoration: "none",
+                transition: "all 0.15s",
+                background: active
+                  ? "rgba(0,230,118,0.08)"
+                  : hovered
+                  ? "rgba(255,255,255,0.04)"
+                  : "transparent",
+                border: active ? "1px solid rgba(0,230,118,0.2)" : "1px solid transparent",
+                borderLeft: active ? "3px solid #00e676" : "3px solid transparent",
+                color: active ? "#00e676" : hovered ? "rgba(255,255,255,0.7)" : "rgba(255,255,255,0.45)",
+              }}
+              onMouseEnter={() => setHoveredHref(item.href)}
+              onMouseLeave={() => setHoveredHref(null)}
+            >
               <span style={{ fontSize: 16, width: 20, textAlign: "center" }}>{item.icon}</span>
               <span style={{ fontSize: 13, fontWeight: 500, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{item.label}</span>
               {active && (

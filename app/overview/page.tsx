@@ -14,9 +14,21 @@ const G = {
   dim: "rgba(255,255,255,0.35)",
 };
 
-function Card({ children, style }: { children: React.ReactNode; style?: React.CSSProperties }) {
+function Card({ children, style, className }: { children: React.ReactNode; style?: React.CSSProperties; className?: string }) {
+  const [hovered, setHovered] = useState(false);
   return (
-    <div className="glass" style={{ padding: 24, ...style }}>
+    <div
+      className={`glass${className ? " " + className : ""}`}
+      style={{
+        padding: 24,
+        transform: hovered ? "scale(1.01)" : "scale(1)",
+        transition: "all 0.2s ease",
+        border: hovered ? "1px solid rgba(0,230,118,0.2)" : "1px solid rgba(255,255,255,0.09)",
+        ...style,
+      }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
       {children}
     </div>
   );
@@ -30,9 +42,33 @@ function Label({ children }: { children: React.ReactNode }) {
   );
 }
 
-function StatCard({ icon, label, value, color, sub }: { icon: string; label: string; value: string; color: string; sub: string }) {
+const SPARKLINES: Record<string, { points: string; color: string }> = {
+  green: { points: "0,16 10,14 20,10 30,12 40,6 50,4 60,2", color: G.green },
+  amber: { points: "0,10 10,8 20,10 30,9 40,10 50,8 60,10", color: G.amber },
+  purple: { points: "0,4 10,6 20,8 30,10 40,12 50,14 60,16", color: G.purple },
+  blue: { points: "0,4 10,3 20,4 30,2 40,3 50,2 60,2", color: G.blue },
+};
+
+function StatCard({ icon, label, value, color, sub, delay, sparklineKey }: {
+  icon: string; label: string; value: string; color: string; sub: string; delay: number; sparklineKey: string;
+}) {
+  const [hovered, setHovered] = useState(false);
+  const spark = SPARKLINES[sparklineKey];
   return (
-    <div className="glass" style={{ padding: 20, borderTop: `2px solid ${color}` }}>
+    <div
+      className="glass"
+      style={{
+        padding: 20,
+        background: `linear-gradient(135deg, ${color}0a, rgba(255,255,255,0.04))`,
+        borderTop: `2px solid ${color}`,
+        border: hovered ? "1px solid rgba(0,230,118,0.2)" : "1px solid rgba(255,255,255,0.09)",
+        transform: hovered ? "scale(1.01)" : "scale(1)",
+        transition: "all 0.2s ease",
+        animation: `fadeInUp 0.4s ease ${delay}s both`,
+      }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
       <div style={{
         width: 36, height: 36, borderRadius: 10, background: `${color}18`,
         display: "flex", alignItems: "center", justifyContent: "center",
@@ -41,6 +77,11 @@ function StatCard({ icon, label, value, color, sub }: { icon: string; label: str
       <div style={{ fontSize: 24, fontWeight: 700, color: "#fff", marginBottom: 2 }}>{value}</div>
       <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase", color: G.muted }}>{label}</div>
       <div style={{ fontSize: 11, color: G.dim, marginTop: 4 }}>{sub}</div>
+      {spark && (
+        <svg width="60" height="20" style={{ marginTop: 8, display: "block" }}>
+          <polyline points={spark.points} fill="none" stroke={spark.color} strokeWidth="1.5" strokeLinecap="round" />
+        </svg>
+      )}
     </div>
   );
 }
@@ -54,7 +95,11 @@ function Countdown({ seconds }: { seconds: number }) {
   const m = Math.floor(s / 60).toString().padStart(2, "0");
   const sec = (s % 60).toString().padStart(2, "0");
   return (
-    <span style={{ fontFamily: "monospace", fontSize: 42, fontWeight: 700, letterSpacing: "0.1em", color: "#fff", fontVariantNumeric: "tabular-nums" }}>
+    <span style={{
+      fontFamily: "monospace", fontSize: 42, fontWeight: 700,
+      letterSpacing: "0.1em", color: "#fff", fontVariantNumeric: "tabular-nums",
+      textShadow: "0 0 20px rgba(0,230,118,0.5), 0 0 40px rgba(0,230,118,0.2)",
+    }}>
       {m}:{sec}
     </span>
   );
@@ -78,7 +123,7 @@ const ACTIVITY = [
 
 export default function Overview() {
   return (
-    <div style={{ width: "100%" }}>
+    <div style={{ width: "100%", animation: "fadeIn 0.4s ease" }}>
       {/* Header */}
       <div style={{ marginBottom: 32 }}>
         <h1 style={{ fontSize: 26, fontWeight: 700, color: "#fff", margin: 0, marginBottom: 6 }}>Overview</h1>
@@ -87,26 +132,36 @@ export default function Overview() {
 
       {/* Stats */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 16, marginBottom: 20 }}>
-        <StatCard icon="⚡" label="Tokens Today" value="284K" color={G.green} sub="28% of daily limit" />
-        <StatCard icon="⏱" label="Active Crons" value="3" color={G.amber} sub="All healthy" />
-        <StatCard icon="☑" label="Tasks Queued" value="2" color={G.purple} sub="Next heartbeat" />
-        <StatCard icon="◎" label="Cache Hits" value="99%" color={G.blue} sub="Saving ~$0.40/day" />
+        <StatCard icon="⚡" label="Tokens Today" value="284K" color={G.green} sub="28% of daily limit" delay={0.1} sparklineKey="green" />
+        <StatCard icon="⏱" label="Active Crons" value="3" color={G.amber} sub="All healthy" delay={0.2} sparklineKey="amber" />
+        <StatCard icon="☑" label="Tasks Queued" value="2" color={G.purple} sub="Next heartbeat" delay={0.3} sparklineKey="purple" />
+        <StatCard icon="◎" label="Cache Hits" value="99%" color={G.blue} sub="Saving ~$0.40/day" delay={0.4} sparklineKey="blue" />
       </div>
 
       {/* Main 3-col */}
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 16, marginBottom: 16 }}>
 
         {/* Apollo Status */}
-        <Card>
+        <Card className="glow-pulse" style={{ animation: "fadeInUp 0.4s ease 0.2s both" }}>
           <Label>Apollo Status</Label>
           <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
-            <div style={{
-              width: 40, height: 40, borderRadius: 12,
-              background: "linear-gradient(135deg, #00e676, #00b0ff)",
-              display: "flex", alignItems: "center", justifyContent: "center",
-              boxShadow: "0 0 20px rgba(0,230,118,0.25)", flexShrink: 0,
-            }}>
-              <span style={{ color: "#080d1a", fontWeight: 900, fontSize: 16 }}>A</span>
+            {/* Avatar with animated ring */}
+            <div style={{ position: "relative", width: 40, height: 40, flexShrink: 0 }}>
+              <div style={{
+                position: "absolute", inset: -3,
+                borderRadius: "50%",
+                background: "conic-gradient(#00e676, #00b0ff, #00e676)",
+                animation: "spin 3s linear infinite",
+                opacity: 0.6,
+              }} />
+              <div style={{
+                position: "relative", width: 40, height: 40, borderRadius: 12,
+                background: "linear-gradient(135deg, #00e676, #00b0ff)",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                boxShadow: "0 0 20px rgba(0,230,118,0.25)",
+              }}>
+                <span style={{ color: "#080d1a", fontWeight: 900, fontSize: 16 }}>A</span>
+              </div>
             </div>
             <div style={{ flex: 1 }}>
               <div style={{ fontWeight: 700, color: "#fff", fontSize: 15 }}>Apollo</div>
@@ -139,7 +194,7 @@ export default function Overview() {
         </Card>
 
         {/* Heartbeat */}
-        <Card style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center" }}>
+        <Card style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", animation: "fadeInUp 0.4s ease 0.3s both" }}>
           <Label>Next Heartbeat</Label>
           <div style={{ marginBottom: 8 }}>
             <span className="pulse-dot" style={{ width: 8, height: 8, borderRadius: "50%", background: G.green, display: "inline-block" }} />
@@ -157,7 +212,7 @@ export default function Overview() {
         </Card>
 
         {/* Active Projects */}
-        <Card>
+        <Card style={{ animation: "fadeInUp 0.4s ease 0.4s both" }}>
           <Label>Active Projects</Label>
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {PROJECTS.map(p => (
@@ -190,9 +245,10 @@ export default function Overview() {
               padding: "10px 14px", borderRadius: 12,
               background: "rgba(255,255,255,0.03)",
               border: "1px solid rgba(255,255,255,0.05)",
+              borderLeft: "2px solid #00e676",
+              paddingLeft: 12,
               gridColumn: i === ACTIVITY.length - 1 ? "1 / -1" : undefined,
             }}>
-              <span style={{ width: 6, height: 6, borderRadius: "50%", background: G.green, flexShrink: 0 }} />
               <span style={{ color: G.muted, fontSize: 11, fontFamily: "monospace", flexShrink: 0 }}>{a.time}</span>
               <span style={{ color: "rgba(255,255,255,0.75)", fontSize: 13 }}>{a.text}</span>
             </div>

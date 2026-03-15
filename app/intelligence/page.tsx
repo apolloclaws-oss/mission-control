@@ -49,9 +49,10 @@ const TAG_COLORS: Record<string, string> = {
 
 export default function Intelligence() {
   const [query, setQuery] = useState(PRESETS[0]);
+  const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
 
   return (
-    <div style={{ width: "100%" }}>
+    <div style={{ width: "100%", animation: "fadeInUp 0.4s ease" }}>
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-white mb-1">Intelligence Feed</h1>
         <p className="text-white/40 text-sm">Research and insights for what we're building</p>
@@ -91,8 +92,19 @@ export default function Intelligence() {
       <div className="space-y-4">
         {RESULTS.map((r, i) => {
           const tagColor = TAG_COLORS[r.tag] || "#00e676";
+          const hovered = hoveredIdx === i;
           return (
-            <div key={i} className="glass p-6">
+            <div
+              key={i}
+              className="glass p-6"
+              style={{
+                transition: "all 0.2s ease",
+                transform: hovered ? "scale(1.005)" : "scale(1)",
+                border: hovered ? "1px solid rgba(0,230,118,0.2)" : "1px solid rgba(255,255,255,0.09)",
+              }}
+              onMouseEnter={() => setHoveredIdx(i)}
+              onMouseLeave={() => setHoveredIdx(null)}
+            >
               <div className="flex items-start justify-between gap-4 mb-3">
                 <h3 className="font-semibold text-white leading-snug">{r.title}</h3>
                 <span

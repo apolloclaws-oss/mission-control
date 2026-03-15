@@ -19,7 +19,7 @@ export default function Usage() {
   const cacheSavings = 0.40;
 
   return (
-    <div style={{ width: "100%" }}>
+    <div style={{ width: "100%", animation: "fadeInUp 0.4s ease" }}>
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-white mb-1">API Usage</h1>
         <p className="text-white/40 text-sm">Token consumption and cost tracking</p>

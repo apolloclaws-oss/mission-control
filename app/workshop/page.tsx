@@ -1,4 +1,5 @@
 "use client";
+import { useState } from "react";
 
 const TASKS = [
   { id: 1, status: "done", title: "Build Exeris website", detail: "Next.js + Tailwind, bilingual NL/EN, contact form with Resend", time: "13:07", duration: "~45 min" },
@@ -17,8 +18,10 @@ const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string }
 };
 
 export default function Workshop() {
+  const [hoveredId, setHoveredId] = useState<number | null>(null);
+
   return (
-    <div style={{ width: "100%" }}>
+    <div style={{ width: "100%", animation: "fadeInUp 0.4s ease" }}>
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-white mb-1">Workshop</h1>
         <p className="text-white/40 text-sm">Everything Apollo is working on — past, present, and queued</p>
@@ -42,8 +45,19 @@ export default function Workshop() {
       <div className="space-y-3">
         {TASKS.map(task => {
           const cfg = STATUS_CONFIG[task.status];
+          const hovered = hoveredId === task.id;
           return (
-            <div key={task.id} className="glass p-5" style={{ transition: "background 0.15s" }}>
+            <div
+              key={task.id}
+              className="glass p-5"
+              style={{
+                transition: "all 0.2s ease",
+                transform: hovered ? "scale(1.005)" : "scale(1)",
+                border: hovered ? "1px solid rgba(0,230,118,0.2)" : "1px solid rgba(255,255,255,0.09)",
+              }}
+              onMouseEnter={() => setHoveredId(task.id)}
+              onMouseLeave={() => setHoveredId(null)}
+            >
               <div className="flex items-start justify-between gap-4">
                 <div className="flex items-start gap-4 flex-1">
                   <div className="mt-0.5 w-8 h-8 rounded-lg flex items-center justify-center text-sm flex-shrink-0"
